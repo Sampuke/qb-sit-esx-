@@ -4,17 +4,51 @@ local debugProps, sitting, lastPos, currentSitCoords, currentScenario, occupied 
 local disableControls = false
 local currentObj = nil
 
+exports('sitting', function()
+    return sitting
+end)
+
+local function displayNUIText()
+    SendNUIMessage({type = "display", text = Config.GetUpText, color = 'rgb(100 100 100)'})
+    Wait(0)
+end
+
+local function hideNUI()
+    SendNUIMessage({type = "hide"})
+    Wait(0)
+end
+
+local function DrawTxt(x, y, width, height, scale, text, r, g, b, a, outline)
+    SetTextFont(4)
+    SetTextProportional(0)
+    SetTextScale(scale, scale)
+    SetTextColour(r, g, b, a)
+    SetTextDropShadow(0, 0, 0, 0,255)
+    SetTextEdge(2, 0, 0, 0, 255)
+    SetTextDropShadow()
+    SetTextOutline()
+    SetTextEntry("STRING")
+    AddTextComponentString(text)
+    DrawText(x - width/2, y - height/2 + 0.005)
+end
 
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 		local playerPed = PlayerPedId()
 
+
+		if sitting then
+			displayNUIText() 
+		else
+			hideNUI() 
+		end
+
 		if sitting and not IsPedUsingScenario(playerPed, currentScenario) then
 			wakeup()
 		end
 
-		if IsControlJustPressed(0, 38) and IsControlPressed(0, 21) and IsInputDisabled(0) and IsPedOnFoot(playerPed) then
+		if IsControlPressed(0, 23) and IsInputDisabled(0) and IsPedOnFoot(playerPed) then
 			if sitting then
 				wakeup()
 			end			
@@ -36,6 +70,7 @@ Citizen.CreateThread(function()
                 event = "qb-Sit:Sit",
                 icon = "fas fa-chair",
                 label = "Use",
+				entity = entity
             },
         },
         job = {"all"},
@@ -43,7 +78,7 @@ Citizen.CreateThread(function()
     })
 end)
 
-RegisterNetEvent("qb-Sit:Sit", function()
+RegisterNetEvent("qb-Sit:Sit", function(data)
 	local playerPed = PlayerPedId()
 
 	if sitting and not IsPedUsingScenario(playerPed, currentScenario) then
@@ -54,7 +89,7 @@ RegisterNetEvent("qb-Sit:Sit", function()
 		DisableControlAction(1, 37, true)
 	end
 
-	local object, distance = GetNearChair()
+	local object, distance = data.entity, #(GetEntityCoords(playerPed) - GetEntityCoords(data.entity))
 
 	if distance and distance < 1.4 then
 		local hash = GetEntityModel(object)
@@ -68,18 +103,6 @@ RegisterNetEvent("qb-Sit:Sit", function()
 	end
 end)
 
-function GetNearChair()
-	local object, distance
-	local coords = GetEntityCoords(PlayerPedId())
-	for i=1, #Config.Interactables do
-		object = GetClosestObjectOfType(coords, 3.0, GetHashKey(Config.Interactables[i]), false, false, false)
-		distance = #(coords - GetEntityCoords(object))
-		if distance < 1.6 then
-			return object, distance
-		end
-	end
-	return nil, nil
-end
 
 function wakeup()
 	local playerPed = PlayerPedId()
@@ -114,7 +137,7 @@ function sit(object, modelName, data)
 
 	QBCore.Functions.TriggerCallback('qb-sit:getPlace', function(occupied)
 		if occupied then
-			QBCore.Functions.Notify('There is someone on this chair', 'error')
+			QBCore.Functions.Notify('Chair is being used.', 'error')
 		else
 			local playerPed = PlayerPedId()
 			lastPos, currentSitCoords = GetEntityCoords(playerPed), objectCoords
