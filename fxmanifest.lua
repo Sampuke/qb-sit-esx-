@@ -13,6 +13,14 @@ client_scripts {
 	'client.lua'
 }
 
+ui_page 'html/sit.html'
+
+files {
+	'html/*.html',
+	'html/*.js',
+	'html/*.css',
+}
+
 dependencies { 
   'PolyZone', 
   'qb-target' 
