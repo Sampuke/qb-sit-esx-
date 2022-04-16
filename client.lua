@@ -59,12 +59,14 @@ end)
 
 CreateThread(function()
 	while true do
-		Wait(1000)
-		if QBCore.Functions.GetPlayerData().metadata["isdead"] or QBCore.Functions.GetPlayerData().metadata["inlaststand"] then
-			isCurDead = true
-		else
-			isCurDead = false
+        if LocalPlayer.state.isLoggedIn then
+			if QBCore.Functions.GetPlayerData().metadata["isdead"] or QBCore.Functions.GetPlayerData().metadata["inlaststand"] then
+				isCurDead = true
+			else
+				isCurDead = false
+			end
 		end
+		Wait(1000)
 	end
 end)
 
