@@ -38,21 +38,23 @@ end
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		local playerPed = PlayerPedId()
+        if LocalPlayer.state.isLoggedIn then
+			local playerPed = PlayerPedId()
 
-		if sitting and not IsPedUsingScenario(playerPed, currentScenario) then
-			TaskStartScenarioAtPosition(playerPed, currentScenario, curobjpos.x, curobjpos.y, curobjpos.z, GetEntityHeading(playerPed), 0, true, false)			
-			--wakeup()
-		end
+			if sitting and not IsPedUsingScenario(playerPed, currentScenario) then
+				TaskStartScenarioAtPosition(playerPed, currentScenario, curobjpos.x, curobjpos.y, curobjpos.z, GetEntityHeading(playerPed), 0, true, false)			
+				--wakeup()
+			end
 
-		if sitting and isCurDead then
-			wakeup()
-		end
-
-		if IsControlPressed(0, 23) then
-			if sitting then
+			if sitting and isCurDead then
 				wakeup()
-			end			
+			end
+
+			if IsControlPressed(0, 23) then
+				if sitting then
+					wakeup()
+				end			
+			end
 		end
 	end
 end)
@@ -69,6 +71,14 @@ CreateThread(function()
 		Wait(1000)
 	end
 end)
+
+CreateThread(function()
+	while true do
+		ped = PlayerPedId()
+		Wait(1000)
+	end
+end)
+
 
 Citizen.CreateThread(function()
 	local Sitables = {}
@@ -182,8 +192,6 @@ function sit(object, modelName, data)
 	curobjpos = GetEntityCoords(object)
 	curobjpos = vector3(curobjpos.x, curobjpos.y, curobjpos.z + (playerPos.z - curobjpos.z)/2)
 	local objectCoords = curobjpos
-
-	print(objectCoords)
 
 	QBCore.Functions.TriggerCallback('qb-sit:getPlace', function(occupied)
 		if occupied then
