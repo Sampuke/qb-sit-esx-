@@ -15,10 +15,6 @@ end)
 QBCore.Functions.CreateCallback('qb-sit:getPlace', function(source, cb, objectCoords)
 	taken = nil
 
-	for k, v in pairs(seatsTaken) do
-		print(k, v)
-	end
-
 	if seatsTaken[objectCoords] then
 		taken = true
 	end
