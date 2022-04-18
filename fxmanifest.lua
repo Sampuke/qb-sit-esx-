@@ -10,6 +10,7 @@ server_scripts {
 client_scripts {
 	'config.lua',
 	'lists/seat.lua',
+        'lists/sitpoints.lua'
 	'client.lua'
 }
 
