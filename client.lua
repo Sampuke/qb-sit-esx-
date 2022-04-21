@@ -26,7 +26,7 @@ Citizen.CreateThread(function()
         if LocalPlayer.state.isLoggedIn then
 
 			if sitting and not IsPedUsingScenario(ped, currentScenario) then
-				TaskStartScenarioAtPosition(ped, currentScenario, curobjpos.x, curobjpos.y, curobjpos.z, GetEntityHeading(playerPed), 0, true, false)			
+				TaskStartScenarioAtPosition(ped, currentScenario, curobjpos.x, curobjpos.y, curobjpos.z, GetEntityHeading(ped), 0, true, false)			
 				--wakeup()
 			end
 
