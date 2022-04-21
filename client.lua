@@ -22,9 +22,8 @@ end
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Citizen.Wait(50)
         if LocalPlayer.state.isLoggedIn then
-			local playerPed = PlayerPedId()
 
 			if sitting and not IsPedUsingScenario(playerPed, currentScenario) then
 				TaskStartScenarioAtPosition(playerPed, currentScenario, curobjpos.x, curobjpos.y, curobjpos.z, GetEntityHeading(playerPed), 0, true, false)			
