@@ -1,5 +1,5 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-
+-- local QBCore = exports['qb-core']:GetCoreObject()
+ESX = exports["es_extended"]:getSharedObject()
 local seatsTaken = {}
 
 RegisterNetEvent('qb-sit:takePlace', function(objectCoords)
@@ -12,7 +12,7 @@ RegisterNetEvent('qb-sit:leavePlace', function(objectCoords)
 	end
 end)
 
-QBCore.Functions.CreateCallback('qb-sit:getPlace', function(source, cb, objectCoords)
+lib.callback.register('qb-sit:getPlace', function(source, cb, objectCoords)
 	taken = nil
 
 	if seatsTaken[objectCoords] then
