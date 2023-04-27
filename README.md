@@ -1,12 +1,9 @@
-# qb-sit
-
-
-Orignial - https://github.com/boostless/esx_sit
-
 ## Requirements
 
-qb-core - https://github.com/qbcore-framework/qb-core
+[ESX](https://github.com/esx-framework/esx_core)
 
-qb-target - https://github.com/BerkieBb/qb-target
+[Ox_lib](https://github.com/overextended/ox_lib)
 
-polyzone - https://github.com/mkafrin/PolyZone
+[Qtarget](https://github.com/overextended/qtarget)
+
+[polyzone](https://github.com/mkafrin/PolyZone)
