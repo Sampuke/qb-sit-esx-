@@ -1,4 +1,5 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+-- local QBCore = exports['qb-core']:GetCoreObject()
+ESX = exports["es_extended"]:getSharedObject()
 
 local debugProps, sitting, lastPos, currentSitCoords, currentScenario, occupied = {}
 local curobjpos = nil
@@ -46,7 +47,11 @@ end)
 CreateThread(function()
 	while true do
         if LocalPlayer.state.isLoggedIn then
-			if QBCore.Functions.GetPlayerData().metadata["isdead"] or QBCore.Functions.GetPlayerData().metadata["inlaststand"] then
+			local isDead = nil
+			ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(dead)
+				isDead = dead and true or false          
+			end)
+			if isDead then
 				isCurDead = true
 			else
 				isCurDead = false
@@ -73,7 +78,7 @@ Citizen.CreateThread(function()
 	end
 
 	Citizen.Wait(100)
-	exports['qb-target']:AddTargetModel(Sitables, {
+	exports['qtarget']:AddTargetModel(Sitables, {
         options = {
             {
                 event = "qb-Sit:Sit",
@@ -86,7 +91,7 @@ Citizen.CreateThread(function()
         distance = Config.MaxDistance
     })
 	for k, v in pairs(Config.SitPoints) do
-		exports['qb-target']:AddBoxZone("Sitpoint"..k, vector3(v.coords.x, v.coords.y, v.coords.z), 0.75, 0.75, {
+		exports['qtarget']:AddBoxZone("Sitpoint"..k, vector3(v.coords.x, v.coords.y, v.coords.z), 0.75, 0.75, {
 			name = "Sitpoint"..k,
 			heading = v.coords.w,
 			debugPoly = false,
@@ -176,10 +181,10 @@ function sit(object, modelName, data)
 	curobjpos = GetEntityCoords(object)
 	curobjpos = vector3(curobjpos.x, curobjpos.y, curobjpos.z + (playerPos.z - curobjpos.z)/2)
 	local objectCoords = curobjpos
-
-	QBCore.Functions.TriggerCallback('qb-sit:getPlace', function(occupied)
+	
+	lib.callback('qb-sit:getPlace', function(occupied)
 		if occupied then
-			QBCore.Functions.Notify('Chair is being used.', 'error')
+			lib.notify({title = 'Chair is being used.', type = 'error'})
 		else
 			local playerPed = PlayerPedId()
 			lastPos, currentSitCoords = GetEntityCoords(playerPed), objectCoords
@@ -208,9 +213,9 @@ function sitpoint(sitpoint, coords)
 	curobjpos = coords
 	local objectCoords = coords.x .. coords.y .. coords.z
 
-	QBCore.Functions.TriggerCallback('qb-sit:getPlace', function(occupied)
+	lib.callback('qb-sit:getPlace', function(occupied)
 		if occupied then
-			QBCore.Functions.Notify('Someone is already sitting here.', 'error')
+			lib.notify({title = 'Someone is already sitting here.', type = 'error'})
 		else
 			local playerPed = PlayerPedId()
 			lastPos, currentSitCoords = GetEntityCoords(playerPed), objectCoords
